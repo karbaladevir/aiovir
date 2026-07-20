@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="https://karbaladevir.github.io/aiovir-docs/assets/logo.jpg" alt="aiovir logo" width="200">
+  <img src="https://uploadkon.ir/uploads/449c19_26f2ce9ee6-be79-4d23-a261-ec6ba71793b1.jpg" alt="aiovir logo" width="200">
 </p>
 
 <h1 align="center">aiovir 🚀</h1>
