@@ -180,51 +180,68 @@ class VirastyClient:
         return await self._post("/post/get", {"postID": post_id})
 
     async def create_post(
-        self,
-        text: str,
-        media: list = None,
-        reply_post_id: str = None,
-        root_post_id: str = None,
-        thread_root_post_id: str = None,
-        reply_policy: str = "all",
-        community_id: str = None,
-        poll_id: str = None,
-        campaign_id: str = None,
-        cloud_meeting_id: str = None,
-        live_stream_id: str = None,
-        title: str = None,
-        extra_data: Dict = None,
-        **kwargs
-    ) -> Dict:
-        payload = {"text": text}
-        if media:
-            payload["media"] = media
-        if reply_post_id:
-            payload["replyPostID"] = reply_post_id
-        if root_post_id:
-            payload["rootPostID"] = root_post_id
-        if thread_root_post_id:
-            payload["threadRootPostID"] = thread_root_post_id
-        if reply_policy:
-            payload["replyPolicy"] = reply_policy
-        if community_id:
-            payload["communityID"] = community_id
-        if poll_id:
-            payload["pollID"] = poll_id
-        if campaign_id:
-            payload["campaignID"] = campaign_id
-        if cloud_meeting_id:
-            payload["cloudMeetingID"] = cloud_meeting_id
-        if live_stream_id:
-            payload["liveStreamID"] = live_stream_id
-        if title:
-            payload["extraData"] = payload.get("extraData", {})
-            payload["extraData"]["title"] = title
-        if extra_data:
-            payload["extraData"] = payload.get("extraData", {})
-            payload["extraData"].update(extra_data)
-        payload.update(kwargs)
-        return await self._post("/post/create", payload)
+    self,
+    text: str,
+    media: list = None,
+    reply_post_id: str = None,
+    root_post_id: str = None,
+    thread_root_post_id: str = None,
+    reply_policy: str = "all",
+    community_id: str = None,
+    poll_id: str = None,
+    campaign_id: str = None,
+    cloud_meeting_id: str = None,
+    live_stream_id: str = None,
+    title: str = None,
+    extra_data: Dict = None,
+    is_thread_root: bool = False,
+    thread_view_mode: str = None,
+    creation_parent_post_id: str = None,
+    creation_type: str = None,
+    question_id: str = None,
+    **kwargs
+) -> Dict:
+    """Create a post using the current Virasty /post/create payload schema."""
+
+    post = {
+        "text": text,
+        "replyPostID": reply_post_id,
+        "rootPostID": root_post_id,
+        "isThreadRoot": is_thread_root,
+        "threadRootPostID": thread_root_post_id,
+        "replyPolicy": reply_policy,
+        "pollID": poll_id,
+        "liveStreamID": live_stream_id,
+        "campaignID": campaign_id,
+        "cloudMeetingID": cloud_meeting_id,
+
+        "extraData": {
+            "media": media or [],
+            "attachedLocation": None,
+            "doNotMentionUserIDs": [],
+            "mediaViewMode": "grid",
+            "dataGrid": None,
+            "topics": [],
+            "opengraphURL": None,
+            "title": title or "",
+            "styles": [],
+            "templateID": None,
+            "subTemplates": None,
+        },
+
+        "threadViewMode": thread_view_mode,
+        "communityID": community_id,
+        "creationParentPostID": creation_parent_post_id,
+        "creationType": creation_type,
+        "questionID": question_id,
+    }
+
+    if extra_data:
+        post["extraData"].update(extra_data)
+
+    post.update(kwargs)
+
+    return await self._post("/post/create", {"post": post})
 
     async def edit_post(self, post_id: str, text: str, title: str = None, styles: list = None) -> Dict:
         payload = {"postID": post_id, "text": text}
